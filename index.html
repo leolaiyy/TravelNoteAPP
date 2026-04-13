@@ -126,10 +126,10 @@
 
         // 午餐發掘指南資料
         const lunchGuideData = [
-            { day: 'Day 1', loc: '柳橋連合市場', desc: '被譽為「博多的廚房」，是感受當地人生活與海鮮尋寶的最佳地點。', focus: '海鮮尋寶・在地市場', points: ['推薦「柳橋食堂」的高CP值海鮮丼', '沿路可買現炸魚板、明太子等傳統小吃邊逛邊吃', '市場內多為海鮮，完全不需擔心牛雞飲食限制'], icon: 'fish', color: 'blue' },
-            { day: 'Day 2', loc: '柳川周邊 / 本吉屋', desc: '來到水鄉柳川，絕對不能錯過當地名物「蒸籠鰻魚飯 (せいろ蒸し)」。', focus: '百年名物・蒸籠鰻魚飯', points: ['本吉屋為知名老店，炭烤香氣與獨門醬汁非常下飯', '若遇到大排長龍，柳川周邊亦有多間美味鰻魚飯店可作備案', '鰻魚飯專門店，無牛/雞肉混入的顧慮'], icon: 'flame', color: 'orange' },
-            { day: 'Day 3', loc: 'LaLaport 美食區', desc: '九州最大的商場之一，美食街與餐廳樓層匯集了各式各樣的日本料理。', focus: '各自挑選・無壓力聚餐', points: ['美食街座位極多，大家可以各自點想吃的餐點再一起享用', '拉麵、海鮮、烏龍麵、炸豬排選擇極多', '對不吃牛/雞的家人最友善，各取所需無壓力！'], icon: 'store', color: 'pink' },
-            { day: 'Day 4', loc: '英彦山參道周邊', desc: '山區的餐飲選擇較少且純樸，以感受當地自然氛圍與傳統料理為主。', focus: '山菜料理・簡單樸實', points: ['餐廳多為傳統定食、山菜烏龍麵或手打蕎麥麵', '湯底多為柴魚昆布或植物性，對飲食限制者很安全', '中午簡單清淡吃，剛好可以留肚子期待晚上的和牛懷石大餐！'], icon: 'leaf', color: 'green' }
+            { day: 'Day 1', loc: '柳橋連合市場', desc: '被譽為「博多的廚房」，是感受當地人生活與海鮮尋寶的最佳地點。', focus: '海鮮尋寶・在地市場', points: ['推薦「柳橋食堂」的高CP值海鮮丼', '沿路可買現炸魚板、明太子等傳統小吃邊逛邊吃', '市場內多為新鮮海產，各種海鮮美食應有盡有'], icon: 'fish', color: 'blue' },
+            { day: 'Day 2', loc: '柳川周邊 / 本吉屋', desc: '來到水鄉柳川，絕對不能錯過當地名物「蒸籠鰻魚飯 (せいろ蒸し)」。', focus: '百年名物・蒸籠鰻魚飯', points: ['本吉屋為知名老店，炭烤香氣與獨門醬汁非常下飯', '若遇到大排長龍，柳川周邊亦有多間美味鰻魚飯店可作備案', '鰻魚飯專門店，專注於傳承百年的美味料理'], icon: 'flame', color: 'orange' },
+            { day: 'Day 3', loc: 'LaLaport 美食區', desc: '九州最大的商場之一，美食街與餐廳樓層匯集了各式各樣的日本料理。', focus: '各自挑選・無壓力聚餐', points: ['美食街座位極多，大家可以各自點想吃的餐點再一起享用', '拉麵、海鮮、烏龍麵、炸豬排選擇極多', '餐飲種類豐富，全家人都能輕鬆找到喜歡的美食！'], icon: 'store', color: 'pink' },
+            { day: 'Day 4', loc: '英彦山參道周邊', desc: '山區的餐飲選擇較少且純樸，以感受當地自然氛圍與傳統料理為主。', focus: '山菜料理・簡單樸實', points: ['餐廳多為傳統定食、山菜烏龍麵或手打蕎麥麵', '湯底多為柴魚昆布或植物熬製，口味天然清爽', '中午簡單清淡吃，剛好可以留肚子期待晚上的和牛懷石大餐！'], icon: 'leaf', color: 'green' }
         ];
 
         // 美食資料與 Emoji
@@ -149,13 +149,18 @@
         };
 
         const restaurantData = [
-            { id: 'hyobando', name: '博多 椒房庵', area: '博多站 (9F)', type: '明太子料理', dist: '步行 4 分', role: 'backup', noBeef: '羽釜炊鯛魚茶泡飯、明太子雞翅', noChicken: '羽釜炊鯛魚茶泡飯、黑毛和牛飯', map: 'https://www.google.com/maps/search/?api=1&query=博多+椒房庵', desc: '位於博多City 9樓。提供一人一箱的精緻定食，環境優雅安靜。' },
+            // 福岡 行程晚餐 (依 Day1, Day2, Day3 順序排列)
             { id: 'kaifudo', name: '藁焼き炉端 海風土', area: '博多站 (筑紫口)', type: '海鮮居酒屋', dist: '步行 3 分', role: 'dinner', noBeef: '550円生魚片玉手箱、炭火燒鳥', noChicken: '550円生魚片玉手箱、稻草燒和牛', map: 'https://www.google.com/maps/search/?api=1&query=藁焼き炉端+海風土', desc: '博多人氣極高的海鮮店，招牌「550円生魚片盒」性價比無敵。' },
-            { id: 'kurokatsutei', name: '黑かつ亭', area: '博多站 (9F)', type: '炸黑豬排', dist: '步行 5 分', role: 'backup', noBeef: '所有豬排定食 (純豬肉)', noChicken: '所有豬排定食 (不含雞肉)', map: 'https://www.google.com/maps/search/?api=1&query=黑かつ亭+JR博多シティ店', desc: '黑豬肉專門店，對於不吃牛/雞的人來說是最安全美味的選擇。' },
-            { id: 'naruto', name: '野菜巻き串 鳴門', area: '中洲 / 祇園', type: '野菜卷串燒', dist: '地鐵 10 分', role: 'dinner', noBeef: '各式豬肉野菜卷、雞肉串燒', noChicken: '各式豬肉野菜卷、和牛串燒', map: 'https://www.google.com/maps/search/?api=1&query=博多やさい巻串屋+鳴門+本店', desc: '福岡特色！用薄切豬肉捲入新鮮蔬菜，清爽且充滿層次感。' },
             { id: 'oyster', name: '#カキもビールも生がスキ', area: '天神 / 大名', type: '生蠔居酒屋', dist: '地鐵 15 分', role: 'dinner', noBeef: '生蠔痛風鍋、海鮮土鍋飯', noChicken: '生蠔痛風鍋、海鮮土鍋飯', map: 'https://www.google.com/maps/search/?api=1&query=%23カキもビールも生がスキ。天神大名店', desc: '大名人氣店，生蠔鮮甜肥美，土鍋飯是必點的結尾美食。' },
+            { id: 'naruto', name: '野菜巻き串 鳴門', area: '中洲 / 祇園', type: '野菜卷串燒', dist: '地鐵 10 分', role: 'dinner', noBeef: '各式豬肉野菜卷、雞肉串燒', noChicken: '各式豬肉野菜卷、和牛串燒', map: 'https://www.google.com/maps/search/?api=1&query=博多やさい巻串屋+鳴門+本店', desc: '福岡特色！用薄切豬肉捲入新鮮蔬菜，清爽且充滿層次感。' },
+            
+            // 福岡 備用推薦
+            { id: 'hyobando', name: '博多 椒房庵', area: '博多站 (9F)', type: '明太子料理', dist: '步行 4 分', role: 'backup', noBeef: '羽釜炊鯛魚茶泡飯、明太子雞翅', noChicken: '羽釜炊鯛魚茶泡飯、黑毛和牛飯', map: 'https://www.google.com/maps/search/?api=1&query=博多+椒房庵', desc: '位於博多City 9樓。提供一人一箱的精緻定食，環境優雅安靜。' },
+            { id: 'kurokatsutei', name: '黑かつ亭', area: '博多站 (9F)', type: '炸黑豬排', dist: '步行 5 分', role: 'backup', noBeef: '所有豬排定食 (純豬肉)', noChicken: '所有豬排定食 (不含雞肉)', map: 'https://www.google.com/maps/search/?api=1&query=黑かつ亭+JR博多シティ店', desc: '黑豬肉專門店，對於不吃牛/雞的人來說是最安全美味的選擇。' },
             { id: 'shinshin', name: '博多らーめん ShinShin', area: '天神 (本店)', type: '豚骨拉麵', dist: '地鐵 10 分', role: 'backup', noBeef: '招牌豚骨拉麵、一口餃子 (純豬肉)', noChicken: '招牌豚骨拉麵、炒飯', map: 'https://www.google.com/maps/search/?api=1&query=博多らーめん+ShinShin+天神本店', desc: '福岡超人氣排隊拉麵店，湯頭濃郁但清爽不膩口，深受在地人與明星喜愛。' },
             { id: 'daichi', name: '大地のうどん', area: '博多站 (地下街)', type: '天婦羅烏龍麵', dist: '步行 2 分', role: 'backup', noBeef: '巨大牛蒡天婦羅烏龍麵、肉片(豬)烏龍麵', noChicken: '巨大牛蒡天婦羅烏龍麵、海鮮天婦羅', map: 'https://www.google.com/maps/search/?api=1&query=大地のうどん+博多駅ちかてん', desc: '以誇張的「巨大牛蒡天婦羅」聞名，麵條晶瑩剔透且Q彈有嚼勁，平價又美味。' },
+            
+            // 由布院 (含晚餐與備用)
             { id: 'hanayoshi', name: '花由餐廳 (大分和牛懷石)', area: '由布院 (旅館內)', type: '懷石料理', dist: '住宿享用', role: 'dinner', noBeef: '享用套餐內的海鮮與配菜 (和牛請親友代勞)', noChicken: '正常享用 (以和牛海鮮為主)', map: 'https://www.google.com/maps/search/?api=1&query=ゆふいん花由', desc: '⚠️ 此餐不可更改菜式 (包含過敏、忌口、不吃生魚等)，入住前及當日均無法變更。包含阿蘇熔岩石板燒黑毛和牛。' },
             { id: 'shin', name: '由布まぶし 心', area: '由布院站前', type: '釜飯三吃', dist: '由布院步行 10 分', role: 'backup', noBeef: '鰻魚釜飯 (推薦)、地雞釜飯', noChicken: '鰻魚釜飯、豐後牛釜飯', map: 'https://www.google.com/maps/search/?api=1&query=由布まぶし+心+駅前支店', desc: '由布院排隊名店，一鍋三吃（原味、拌佐料、茶泡飯）。' },
             { id: 'izumi', name: '古式手打ちそば 泉', area: '由布院 (金鱗湖旁)', type: '手打蕎麥麵', dist: '由布院步行 20 分', role: 'backup', noBeef: '天婦羅蕎麥麵、豆腐料理', noChicken: '天婦羅蕎麥麵、豆腐料理', map: 'https://www.google.com/maps/search/?api=1&query=古式手打ちそば+泉+金鱗湖', desc: '位於金鱗湖畔，可以一邊欣賞美景一邊品嚐道地的手打麵。' },
@@ -317,7 +322,12 @@
             } else if (currentView === 'hakata' || currentView === 'yufuin') {
                 const data = restaurantData
                     .filter(d => currentView === 'yufuin' ? d.area.includes('由布院') : !d.area.includes('由布院'))
-                    .sort((a, b) => (a.role === 'dinner' ? -1 : (b.role === 'dinner' ? 1 : 0)));
+                    .sort((a, b) => {
+                        // 確保晚餐類別置頂，且同類別維持原本陣列設定的順序
+                        if (a.role === 'dinner' && b.role !== 'dinner') return -1;
+                        if (a.role !== 'dinner' && b.role === 'dinner') return 1;
+                        return 0;
+                    });
                 
                 let cards = data.map(res => {
                     const fb = fallbackUI[res.id];
