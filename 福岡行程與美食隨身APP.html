@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>福岡・由布院 5天4夜隨身指南</title>
+    <!-- 使用 Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 使用 Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        html { scroll-behavior: smooth; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .animate-fadeIn { animation: fadeIn 0.4s ease-out forwards; }
+        .animate-slideIn { animation: slideIn 0.3s ease-out forwards; }
+        
+        /* 防止手機版長按選取 */
+        .no-select { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+
+        /* 滾動條美化與隱藏 */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* 確保點擊天數跳轉時，不會被頂部導航遮擋 */
+        .scroll-mt-safe { scroll-margin-top: 115px; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans selection:bg-orange-100">
+
+    <div id="app" class="max-w-md mx-auto bg-gray-50 min-h-screen shadow-2xl relative pb-20">
+        <!-- 頁首 -->
+        <header class="bg-white/95 backdrop-blur-sm border-b sticky top-0 z-40 p-4 flex justify-between items-center shadow-sm">
+            <div>
+                <div class="font-black text-xl tracking-tighter text-gray-800">福岡・由布院 <span class="text-orange-600">隨身本</span></div>
+                <div class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">5天4夜 暢遊九州</div>
+            </div>
+        </header>
+
+        <!-- 主內容區 -->
+        <main id="main-content" class="min-h-[calc(100vh-140px)]"></main>
+
+        <!-- 導覽列 (改為 5 個按鈕) -->
+        <nav id="bottom-nav" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md p-2 bg-white/95 backdrop-blur-lg border-t border-gray-100 flex justify-around shadow-[0_-5px_20px_rgba(0,0,0,0.05)] z-50 pb-safe">
+            <button onclick="switchView('itinerary')" data-view="itinerary" class="nav-item no-select flex flex-col items-center flex-1 py-1 transition-colors text-gray-300">
+                <i data-lucide="calendar-days" class="w-5 h-5"></i><span class="text-[10px] mt-1 font-bold">行程</span>
+            </button>
+            <button onclick="switchView('lunch')" data-view="lunch" class="nav-item no-select flex flex-col items-center flex-1 py-1 transition-colors text-gray-300">
+                <i data-lucide="compass" class="w-5 h-5"></i><span class="text-[10px] mt-1 font-bold">午餐發掘</span>
+            </button>
+            <button onclick="switchView('hakata')" data-view="hakata" class="nav-item no-select flex flex-col items-center flex-1 py-1 transition-colors text-gray-300">
+                <i data-lucide="utensils" class="w-5 h-5"></i><span class="text-[10px] mt-1 font-bold">福岡美食</span>
+            </button>
+            <button onclick="switchView('yufuin')" data-view="yufuin" class="nav-item no-select flex flex-col items-center flex-1 py-1 transition-colors text-gray-300">
+                <i data-lucide="mountain" class="w-5 h-5"></i><span class="text-[10px] mt-1 font-bold">由布院美食</span>
+            </button>
+            <button onclick="switchView('tips')" data-view="tips" class="nav-item no-select flex flex-col items-center flex-1 py-1 transition-colors text-gray-300">
+                <i data-lucide="languages" class="w-5 h-5"></i><span class="text-[10px] mt-1 font-bold">溝通卡</span>
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        let currentView = 'itinerary';
+
+        // 分類配色與圖示設定
+        const typeConfig = {
+            transport: { color: 'border-orange-500 text-orange-500 bg-orange-50', icon: 'car' },
+            attraction: { color: 'border-blue-500 text-blue-500 bg-blue-50', icon: 'camera' },
+            dining: { color: 'border-green-500 text-green-600 bg-green-50', icon: 'utensils' },
+            accommodation: { color: 'border-purple-500 text-purple-600 bg-purple-50', icon: 'bed-double' },
+            other: { color: 'border-gray-400 text-gray-500 bg-gray-50', icon: 'clock' }
+        };
+
+        // 完整 5 天行程資料
+        const itineraryData = [
+            { day: 'Day 1', date: '第一天', title: '抵達福岡・海鮮市場・福岡塔', items: [
+                { time: '10:55', type: 'transport', task: '抵達福岡機場', loc: '福岡機場國際線', note: '辦理入境與提領行李' },
+                { time: '12:30', type: 'dining', task: '午餐：柳橋連合市場', loc: '中央區春吉', note: '推薦「柳橋食堂」海鮮丼，市場內可買炸魚板、明太子 (無牛雞問題)' },
+                { time: '14:30', type: 'accommodation', task: '飯店 Check-in 入住', loc: 'Hotel Forza 博多駅筑紫口', note: '距離博多車站極近，交通便利且具質感的舒適商務旅館。' },
+                { time: '16:00', type: 'attraction', task: '福岡塔觀景', loc: '早良區百道浜', note: '登上塔頂觀海景與夕陽' },
+                { time: '18:30', type: 'dining', task: '晚餐：海風土爐端燒', loc: 'Forza 飯店步行3分鐘', noBeef: '550円生魚片箱、烤大蝦', noChicken: '生魚片箱、稻草燒和牛' }
+            ]},
+            { day: 'Day 2', date: '第二天', title: '太宰府・柳川遊船・大名居酒屋', items: [
+                { time: '09:30', type: 'transport', task: '飯店出發', loc: 'Hotel Forza', note: '請準時於大廳集合，車程約50分鐘' },
+                { time: '10:30', type: 'attraction', task: '太宰府天滿宮', loc: '太宰府市', note: '參拜學問之神；欣賞隈研吾設計星巴克；必吃名物梅枝餅' },
+                { time: '13:00', type: 'dining', task: '午餐：本吉屋 蒸籠鰻魚飯', loc: '柳川市', note: '柳川名物必吃，建議早到避排隊 (鰻魚為主，無牛雞問題)' },
+                { time: '14:30', type: 'attraction', task: '柳川遊船體驗', loc: '柳川遊船碼頭', note: '約60分鐘；船夫唱歌，欣賞垂柳水鄉' },
+                { time: '17:00', type: 'transport', task: '返回福岡市區', note: '車程約1小時' },
+                { time: '18:30', type: 'dining', task: '晚餐：生蠔居酒屋', loc: '大名區 (地鐵15分鐘)', note: '店名: #カキもビールも生がスキ', noBeef: '生蠔痛風鍋、海鮮土鍋飯', noChicken: '生蠔痛風鍋、海鮮土鍋飯' }
+            ]},
+            { day: 'Day 3', date: '第三天', title: '高達立像・糸島海岸・野菜卷', items: [
+                { time: '09:30', type: 'transport', task: '飯店出發', loc: 'Hotel Forza', note: '車程約15分鐘' },
+                { time: '10:00', type: 'attraction', task: '實物大高達立像', loc: 'LaLaport 福岡', note: '24.8米 RX-93ffv高達，定時燈光演出，免費觀賞拍照' },
+                { time: '10:30', type: 'attraction', task: '三井 LaLaport 購物', loc: '博多區那珂', note: '九州最大商場：ZARA、UNIQLO、GU、VS PARK體感遊樂' },
+                { time: '12:00', type: 'dining', task: '午餐：LaLaport美食區', loc: '美食樓層', note: '拉麵、迴轉壽司、漢堡排等多間餐廳，各人可自選' },
+                { time: '13:30', type: 'transport', task: '前往糸島', note: '車程約45分鐘' },
+                { time: '14:15', type: 'attraction', task: '櫻井二見浦夫婦岩', loc: '糸島市', note: '海中白色鳥居，絕美打卡點' },
+                { time: '15:30', type: 'attraction', task: '海岸散步 / 下午茶', loc: 'Palm Beach 一帶', note: '海邊網紅咖啡店，悠閒拍照' },
+                { time: '17:00', type: 'transport', task: '返回福岡市區', note: '車程約40分鐘' },
+                { time: '17:30', type: 'other', task: '自由活動', loc: '博多運河城 / 天神', note: '補買手信、藥妝' },
+                { time: '19:00', type: 'dining', task: '晚餐：鳴門 野菜卷串', loc: '天神 / 大名區', noBeef: '豬五花蔬菜卷、烤豬肉', noChicken: '豬五花蔬菜卷、和牛串' }
+            ]},
+            { day: 'Day 4', date: '第四天', title: '南蔵院大佛・纜車・由布院溫泉', items: [
+                { time: '09:00', type: 'transport', task: '退房出發', loc: 'Hotel Forza', note: '⚠️ 今天行程豐富，請務必準時出發' },
+                { time: '09:40', type: 'attraction', task: '南藏院 (臥佛)', loc: '篠栗町', note: '世界最大青銅臥佛；環境清幽壯觀' },
+                { time: '11:00', type: 'transport', task: '前往英彦山', note: '車程約1小時' },
+                { time: '12:00', type: 'dining', task: '午餐：英彦山周邊', loc: '英彦山參道入口', note: '山區定食多為烏龍麵、蕎麥，簡單吃 (晚上吃旅館大餐)' },
+                { time: '13:30', type: 'attraction', task: '英彦山神宮 & 纜車', loc: 'Slope Car', note: '單軌纜車上升至奉幣殿；不用爬樓梯，適合長輩' },
+                { time: '15:00', type: 'transport', task: '前往由布院', note: '車程約 1.5 小時' },
+                { time: '16:30', type: 'attraction', task: '金鱗湖散步', loc: '由布院', note: '傍晚散步拍照；湖面倒映由布岳' },
+                { time: '17:30', type: 'accommodation', task: '入住 花由 溫泉旅館', loc: 'ゆふいん花由', note: '坐擁由布岳絕景的高級溫泉旅館，可盡情享受舒適的私人露天風呂。' },
+                { time: '19:00', type: 'dining', task: '晚餐：大分和牛懷石', loc: '花由餐廳', warning: true, note: '此餐不可更改菜式 (包含過敏、忌口、不吃生魚等)，入住前及當日均無法變更。包含阿蘇熔岩石板燒黑毛和牛。' },
+                { time: '20:30', type: 'other', task: '溫泉時光', loc: '房間風呂或大浴場', note: '盡情享受私人露天風呂' }
+            ]},
+            { day: 'Day 5', date: '第五天', title: '晨湯・採買・返程歸國', items: [
+                { time: '07:30', type: 'dining', task: '晨湯 & 和式早餐', loc: '花由旅館內', note: '把握最後泡湯時光' },
+                { time: '09:30', type: 'transport', task: '退房出發前往機場', loc: '由布院 → FUK', note: '需到店付沐浴稅<br>高速車程約2小時' },
+                { time: '11:30', type: 'other', task: '福岡機場最後採買', loc: '福岡機場國際線', note: '博多通饅頭、明太子仙貝、ROYCE朱古力等' },
+                { time: '14:00', type: 'transport', task: '搭機離開', loc: '福岡機場 (FUK)', note: '旅途愉快，滿載而歸！' }
+            ]}
+        ];
+
+        // 午餐發掘指南資料
+        const lunchGuideData = [
+            { day: 'Day 1', loc: '柳橋連合市場', desc: '被譽為「博多的廚房」，是感受當地人生活與海鮮尋寶的最佳地點。', focus: '海鮮尋寶・在地市場', points: ['推薦「柳橋食堂」的高CP值海鮮丼', '沿路可買現炸魚板、明太子等傳統小吃邊逛邊吃', '市場內多為海鮮，完全不需擔心牛雞飲食限制'], icon: 'fish', color: 'blue' },
+            { day: 'Day 2', loc: '柳川周邊 / 本吉屋', desc: '來到水鄉柳川，絕對不能錯過當地名物「蒸籠鰻魚飯 (せいろ蒸し)」。', focus: '百年名物・蒸籠鰻魚飯', points: ['本吉屋為知名老店，炭烤香氣與獨門醬汁非常下飯', '若遇到大排長龍，柳川周邊亦有多間美味鰻魚飯店可作備案', '鰻魚飯專門店，無牛/雞肉混入的顧慮'], icon: 'flame', color: 'orange' },
+            { day: 'Day 3', loc: 'LaLaport 美食區', desc: '九州最大的商場之一，美食街與餐廳樓層匯集了各式各樣的日本料理。', focus: '各自挑選・無壓力聚餐', points: ['美食街座位極多，大家可以各自點想吃的餐點再一起享用', '拉麵、海鮮、烏龍麵、炸豬排選擇極多', '對不吃牛/雞的家人最友善，各取所需無壓力！'], icon: 'store', color: 'pink' },
+            { day: 'Day 4', loc: '英彦山參道周邊', desc: '山區的餐飲選擇較少且純樸，以感受當地自然氛圍與傳統料理為主。', focus: '山菜料理・簡單樸實', points: ['餐廳多為傳統定食、山菜烏龍麵或手打蕎麥麵', '湯底多為柴魚昆布或植物性，對飲食限制者很安全', '中午簡單清淡吃，剛好可以留肚子期待晚上的和牛懷石大餐！'], icon: 'leaf', color: 'green' }
+        ];
+
+        // 美食資料與 Emoji
+        const fallbackUI = {
+            hyobando: { emoji: '🍚', color: 'from-red-500 to-orange-600', text: '明太子與茶泡飯' },
+            kaifudo: { emoji: '🐟', color: 'from-blue-500 to-cyan-600', text: '精選生魚片拼盤' },
+            kurokatsutei: { emoji: '🥩', color: 'from-amber-500 to-orange-700', text: '鹿兒島炸黑豬排' },
+            naruto: { emoji: '🍢', color: 'from-green-500 to-emerald-700', text: '豚肉野菜卷串燒' },
+            oyster: { emoji: '🦪', color: 'from-cyan-600 to-blue-800', text: '新鮮生蠔與海鮮鍋' },
+            shinshin: { emoji: '🍜', color: 'from-blue-600 to-indigo-800', text: '超人氣豚骨拉麵' },
+            daichi: { emoji: '🍤', color: 'from-yellow-500 to-orange-600', text: '巨型牛蒡天婦羅' },
+            shin: { emoji: '🍱', color: 'from-orange-600 to-red-800', text: '炭烤鰻魚釜飯' },
+            izumi: { emoji: '🍜', color: 'from-lime-600 to-green-800', text: '手打蕎麥麵與天婦羅' },
+            kunugi: { emoji: '🍕', color: 'from-orange-400 to-red-600', text: '絕景柴燒披薩' },
+            laruche: { emoji: '☕', color: 'from-stone-500 to-amber-700', text: '金鱗湖畔咖啡' },
+            hanayoshi: { emoji: '🥩', color: 'from-rose-600 to-red-800', text: '頂級和牛懷石' }
+        };
+
+        const restaurantData = [
+            { id: 'hyobando', name: '博多 椒房庵', area: '博多站 (9F)', type: '明太子料理', dist: '步行 4 分', role: 'backup', noBeef: '羽釜炊鯛魚茶泡飯、明太子雞翅', noChicken: '羽釜炊鯛魚茶泡飯、黑毛和牛飯', map: 'https://www.google.com/maps/search/?api=1&query=博多+椒房庵', desc: '位於博多City 9樓。提供一人一箱的精緻定食，環境優雅安靜。' },
+            { id: 'kaifudo', name: '藁焼き炉端 海風土', area: '博多站 (筑紫口)', type: '海鮮居酒屋', dist: '步行 3 分', role: 'dinner', noBeef: '550円生魚片玉手箱、炭火燒鳥', noChicken: '550円生魚片玉手箱、稻草燒和牛', map: 'https://www.google.com/maps/search/?api=1&query=藁焼き炉端+海風土', desc: '博多人氣極高的海鮮店，招牌「550円生魚片盒」性價比無敵。' },
+            { id: 'kurokatsutei', name: '黑かつ亭', area: '博多站 (9F)', type: '炸黑豬排', dist: '步行 5 分', role: 'backup', noBeef: '所有豬排定食 (純豬肉)', noChicken: '所有豬排定食 (不含雞肉)', map: 'https://www.google.com/maps/search/?api=1&query=黑かつ亭+JR博多シティ店', desc: '黑豬肉專門店，對於不吃牛/雞的人來說是最安全美味的選擇。' },
+            { id: 'naruto', name: '野菜巻き串 鳴門', area: '中洲 / 祇園', type: '野菜卷串燒', dist: '地鐵 10 分', role: 'dinner', noBeef: '各式豬肉野菜卷、雞肉串燒', noChicken: '各式豬肉野菜卷、和牛串燒', map: 'https://www.google.com/maps/search/?api=1&query=博多やさい巻串屋+鳴門+本店', desc: '福岡特色！用薄切豬肉捲入新鮮蔬菜，清爽且充滿層次感。' },
+            { id: 'oyster', name: '#カキもビールも生がスキ', area: '天神 / 大名', type: '生蠔居酒屋', dist: '地鐵 15 分', role: 'dinner', noBeef: '生蠔痛風鍋、海鮮土鍋飯', noChicken: '生蠔痛風鍋、海鮮土鍋飯', map: 'https://www.google.com/maps/search/?api=1&query=%23カキもビールも生がスキ。天神大名店', desc: '大名人氣店，生蠔鮮甜肥美，土鍋飯是必點的結尾美食。' },
+            { id: 'shinshin', name: '博多らーめん ShinShin', area: '天神 (本店)', type: '豚骨拉麵', dist: '地鐵 10 分', role: 'backup', noBeef: '招牌豚骨拉麵、一口餃子 (純豬肉)', noChicken: '招牌豚骨拉麵、炒飯', map: 'https://www.google.com/maps/search/?api=1&query=博多らーめん+ShinShin+天神本店', desc: '福岡超人氣排隊拉麵店，湯頭濃郁但清爽不膩口，深受在地人與明星喜愛。' },
+            { id: 'daichi', name: '大地のうどん', area: '博多站 (地下街)', type: '天婦羅烏龍麵', dist: '步行 2 分', role: 'backup', noBeef: '巨大牛蒡天婦羅烏龍麵、肉片(豬)烏龍麵', noChicken: '巨大牛蒡天婦羅烏龍麵、海鮮天婦羅', map: 'https://www.google.com/maps/search/?api=1&query=大地のうどん+博多駅ちかてん', desc: '以誇張的「巨大牛蒡天婦羅」聞名，麵條晶瑩剔透且Q彈有嚼勁，平價又美味。' },
+            { id: 'hanayoshi', name: '花由餐廳 (大分和牛懷石)', area: '由布院 (旅館內)', type: '懷石料理', dist: '住宿享用', role: 'dinner', noBeef: '享用套餐內的海鮮與配菜 (和牛請親友代勞)', noChicken: '正常享用 (以和牛海鮮為主)', map: 'https://www.google.com/maps/search/?api=1&query=ゆふいん花由', desc: '⚠️ 此餐不可更改菜式 (包含過敏、忌口、不吃生魚等)，入住前及當日均無法變更。包含阿蘇熔岩石板燒黑毛和牛。' },
+            { id: 'shin', name: '由布まぶし 心', area: '由布院站前', type: '釜飯三吃', dist: '由布院步行 10 分', role: 'backup', noBeef: '鰻魚釜飯 (推薦)、地雞釜飯', noChicken: '鰻魚釜飯、豐後牛釜飯', map: 'https://www.google.com/maps/search/?api=1&query=由布まぶし+心+駅前支店', desc: '由布院排隊名店，一鍋三吃（原味、拌佐料、茶泡飯）。' },
+            { id: 'izumi', name: '古式手打ちそば 泉', area: '由布院 (金鱗湖旁)', type: '手打蕎麥麵', dist: '由布院步行 20 分', role: 'backup', noBeef: '天婦羅蕎麥麵、豆腐料理', noChicken: '天婦羅蕎麥麵、豆腐料理', map: 'https://www.google.com/maps/search/?api=1&query=古式手打ちそば+泉+金鱗湖', desc: '位於金鱗湖畔，可以一邊欣賞美景一邊品嚐道地的手打麵。' },
+            { id: 'kunugi', name: '櫟の丘 (Kunugi no Oka)', area: '由布院 (郊區山丘)', type: '柴燒披薩', dist: '車程 5 分', role: 'backup', noBeef: '瑪格麗特披薩、海鮮義大利麵', noChicken: '培根蘑菇披薩、海鮮義大利麵', map: 'https://www.google.com/maps/search/?api=1&query=櫟の丘+由布院', desc: '坐擁由布院絕佳風景的景觀餐廳，招牌是正宗的柴燒石窯披薩與手工義大利麵。' },
+            { id: 'laruche', name: 'Café La Ruche', area: '由布院 (金鱗湖畔)', type: '湖畔咖啡輕食', dist: '由布院步行 20 分', role: 'backup', noBeef: '明太子奶油義大利麵、可頌三明治', noChicken: '明太子奶油義大利麵、沙拉拼盤', map: 'https://www.google.com/maps/search/?api=1&query=Cafe+La+Ruche+由布院', desc: '位於金鱗湖畔的絕美咖啡館。可以一邊喝咖啡、吃輕食，一邊欣賞夢幻的湖景。' }
+        ];
+
+        function switchView(view) {
+            currentView = view;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            render();
+        }
+
+        function render() {
+            const main = document.getElementById('main-content');
+            
+            if (currentView === 'itinerary') {
+                let html = '';
+                
+                // 即時切換天數的吸頂導航列
+                html += `<div class="sticky top-[60px] z-30 bg-white/95 backdrop-blur-md py-2.5 border-b border-gray-100 shadow-sm flex gap-2 px-4 overflow-x-auto hide-scrollbar whitespace-nowrap">`;
+                itineraryData.forEach((day, idx) => {
+                    html += `<button onclick="document.getElementById('day-${idx}').scrollIntoView({behavior: 'smooth'})" class="px-3.5 py-1.5 bg-gray-100 border border-gray-200 rounded-full text-xs font-black text-gray-600 shadow-sm active:scale-95 transition-all focus:bg-gray-800 focus:text-white focus:border-gray-800 no-select">${day.day}</button>`;
+                });
+                html += `</div>`;
+
+                html += '<div class="p-4 space-y-6 animate-fadeIn">';
+
+                // 產生每日行程
+                itineraryData.forEach((day, idx) => {
+                    // 加入 id 與 scroll-mt-safe 確保點擊跳轉時位置精準
+                    html += `
+                    <div id="day-${idx}" class="bg-white rounded-[1.5rem] shadow-sm border border-gray-100 overflow-hidden scroll-mt-safe">
+                        <div class="bg-gray-800 text-white p-4 relative overflow-hidden">
+                            <div class="absolute -right-4 -top-4 opacity-10">
+                                <i data-lucide="map" class="w-24 h-24"></i>
+                            </div>
+                            <div class="relative z-10 flex items-end justify-between mb-1">
+                                <span class="text-xl font-black">${day.day}</span>
+                                <span class="text-sm font-bold text-gray-300">${day.date}</span>
+                            </div>
+                            <div class="relative z-10 text-sm font-medium text-orange-400">${day.title}</div>
+                        </div>
+                        <div class="p-4">
+                    `;
+                    
+                    day.items.forEach(item => {
+                        const style = typeConfig[item.type] || typeConfig.other;
+                        
+                        html += `
+                            <div class="flex gap-3 relative z-10 py-1 group">
+                                <!-- 左側時間 -->
+                                <div class="w-11 text-right shrink-0 pt-1">
+                                    <span class="text-[13px] font-black text-gray-800 tracking-tighter">${item.time}</span>
+                                </div>
+                                
+                                <!-- 中間時間軸與圖示 (視覺化配色) -->
+                                <div class="flex flex-col items-center">
+                                    <div class="w-7 h-7 rounded-full border-[1.5px] flex items-center justify-center shrink-0 shadow-sm z-10 ${style.color}">
+                                        <i data-lucide="${style.icon}" class="w-3.5 h-3.5"></i>
+                                    </div>
+                                    <div class="w-[2px] h-full bg-gray-100 mt-1 rounded-full group-last:hidden min-h-[20px]"></div>
+                                </div>
+
+                                <!-- 右側內容 -->
+                                <div class="pb-5 w-full pt-1">
+                                    <div class="font-bold text-gray-800 text-[15px] leading-snug">${item.task}</div>
+                                    ${item.loc ? `<div class="text-[12px] text-gray-400 flex items-center gap-1 mt-1 font-bold"><i data-lucide="map-pin" class="w-3 h-3"></i><span>${item.loc}</span></div>` : ''}
+                                    
+                                    <!-- 紅色警示提醒 (花由晚餐專用) -->
+                                    ${item.warning ? `
+                                        <div class="mt-2 bg-red-50 border border-red-200 text-red-800 p-3 rounded-xl text-[12px] font-bold leading-relaxed shadow-sm">
+                                            <div class="flex items-center gap-1.5 mb-1.5 text-red-600 text-[13px] font-black">
+                                                <i data-lucide="alert-triangle" class="w-4 h-4"></i> <span>⚠️ 嚴格規定警示</span>
+                                            </div>
+                                            ${item.note}
+                                        </div>
+                                    ` : item.note ? `
+                                        <div class="text-[12px] text-gray-500 bg-gray-50 px-3 py-2 rounded-xl leading-relaxed mt-2 font-medium">${item.note}</div>
+                                    ` : ''}
+
+                                    <!-- 飲食建議分離卡片 -->
+                                    ${(item.noBeef || item.noChicken) ? `
+                                        <div class="mt-2.5 space-y-1.5">
+                                            ${item.noBeef ? `
+                                                <div class="flex items-start text-[12px] bg-white border border-red-100 rounded-lg p-2 shadow-sm">
+                                                    <span class="font-black text-red-600 bg-red-100 px-1.5 py-0.5 rounded text-[10px] shrink-0 mr-2 uppercase tracking-wide">不吃牛建議</span>
+                                                    <span class="text-gray-700 font-bold leading-snug">${item.noBeef}</span>
+                                                </div>
+                                            ` : ''}
+                                            ${item.noChicken ? `
+                                                <div class="flex items-start text-[12px] bg-white border border-orange-100 rounded-lg p-2 shadow-sm">
+                                                    <span class="font-black text-orange-600 bg-orange-100 px-1.5 py-0.5 rounded text-[10px] shrink-0 mr-2 uppercase tracking-wide">不吃雞建議</span>
+                                                    <span class="text-gray-700 font-bold leading-snug">${item.noChicken}</span>
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div></div>`;
+                });
+                html += '</div>';
+                main.innerHTML = html;
+
+            } else if (currentView === 'lunch') {
+                let html = `
+                    <div class="p-4 animate-slideIn pb-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-black text-gray-800 pl-1">每日午餐發掘指南</h2>
+                        </div>
+                        
+                        <div class="mb-6 bg-amber-50 border border-amber-100 p-4 rounded-2xl text-[13px] text-amber-800 font-medium leading-relaxed shadow-sm">
+                            <div class="flex items-center gap-2 mb-2 font-black text-amber-600 text-[14px]">
+                                <i data-lucide="map" class="w-4 h-4"></i> 午餐攻略說明
+                            </div>
+                            前四天的午餐沒有綁死特定餐廳，大家可以依照當下的行程進度與飢餓程度，在以下推薦區域自由發掘、彈性挑選喜歡的美食喔！
+                        </div>
+                `;
+                
+                lunchGuideData.forEach(item => {
+                    const colorMap = {
+                        blue: { bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-100' },
+                        orange: { bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-orange-100' },
+                        pink: { bg: 'bg-pink-50', text: 'text-pink-600', border: 'border-pink-100' },
+                        green: { bg: 'bg-green-50', text: 'text-green-600', border: 'border-green-100' }
+                    };
+                    const c = colorMap[item.color];
+                    
+                    html += `
+                        <div class="bg-white rounded-[1.5rem] shadow-sm border border-gray-100 mb-6 overflow-hidden relative no-select">
+                            <div class="${c.bg} px-5 py-4 border-b ${c.border} flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="${c.text} font-black text-lg">${item.day}</span>
+                                    <span class="text-gray-800 font-bold tracking-wide">${item.loc}</span>
+                                </div>
+                                <div class="${c.text} opacity-80"><i data-lucide="${item.icon}" class="w-5 h-5"></i></div>
+                            </div>
+                            <div class="p-5">
+                                <h4 class="font-black text-gray-800 text-[15px] mb-2">${item.focus}</h4>
+                                <p class="text-[13px] text-gray-500 mb-5 leading-relaxed font-medium">${item.desc}</p>
+                                <div class="space-y-2.5 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                                    ${item.points.map(p => `
+                                        <div class="flex items-start gap-2.5 text-[13px] text-gray-700 font-bold">
+                                            <i data-lucide="check-circle-2" class="w-4 h-4 mt-0.5 ${c.text} shrink-0"></i>
+                                            <span class="leading-snug">${p}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                main.innerHTML = html;
+
+            } else if (currentView === 'hakata' || currentView === 'yufuin') {
+                const data = restaurantData
+                    .filter(d => currentView === 'yufuin' ? d.area.includes('由布院') : !d.area.includes('由布院'))
+                    .sort((a, b) => (a.role === 'dinner' ? -1 : (b.role === 'dinner' ? 1 : 0)));
+                
+                let cards = data.map(res => {
+                    const fb = fallbackUI[res.id];
+                    
+                    const roleBadge = res.role === 'dinner' 
+                        ? `<div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-[10px] font-black shadow-md z-20 flex items-center gap-1"><i data-lucide="moon" class="w-3 h-3"></i> 行程晚餐</div>`
+                        : `<div class="absolute top-4 right-4 bg-gray-600/95 backdrop-blur text-white px-3 py-1 rounded-full text-[10px] font-black shadow-md z-20 flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3 h-3 text-green-300"></i> 備用推薦</div>`;
+
+                    return `
+                    <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 mb-6 animate-slideIn no-select">
+                        <div class="h-44 bg-gray-100 relative">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br ${fb.color} text-white p-4 z-0">
+                                <span class="text-4xl mb-1">${fb.emoji}</span>
+                                <span class="font-bold text-sm tracking-widest opacity-90">${fb.text}</span>
+                            </div>
+                            <div class="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black text-orange-600 shadow-sm z-20 uppercase tracking-widest">${res.type}</div>
+                            ${roleBadge}
+                        </div>
+                        <div class="p-5">
+                            <div class="mb-3">
+                                <h3 class="text-xl font-black text-gray-800 mb-1">${res.name}</h3>
+                                <div class="flex items-center text-gray-400 text-[11px] font-bold">
+                                    <i data-lucide="map-pin" class="w-3 h-3 mr-1"></i> ${res.area} • ${res.dist}
+                                </div>
+                            </div>
+                            <p class="text-gray-500 text-sm mb-5 leading-relaxed font-medium">${res.desc}</p>
+                            
+                            <div class="grid grid-cols-1 gap-2 mb-6 text-[13px]">
+                                <div class="flex items-center bg-red-50 p-3 rounded-2xl border border-red-100">
+                                    <span class="text-[10px] font-black text-red-600 bg-red-100 px-2 py-0.5 rounded-full mr-3 shrink-0 uppercase tracking-wider">不吃牛</span>
+                                    <span class="text-gray-700 font-bold leading-tight">${res.noBeef}</span>
+                                </div>
+                                <div class="flex items-center bg-orange-50 p-3 rounded-2xl border border-orange-100">
+                                    <span class="text-[10px] font-black text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full mr-3 shrink-0 uppercase tracking-wider">不吃雞</span>
+                                    <span class="text-gray-700 font-bold leading-tight">${res.noChicken}</span>
+                                </div>
+                            </div>
+                            
+                            <a href="${res.map}" target="_blank" class="flex items-center justify-center w-full bg-gray-900 text-white py-4 rounded-2xl font-black hover:bg-black active:scale-[0.98] transition-all shadow-lg text-sm">
+                                <i data-lucide="map" class="mr-2 w-4 h-4"></i> 查看 Google 地圖導覽
+                            </a>
+                        </div>
+                    </div>
+                `}).join('');
+                
+                main.innerHTML = `
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-lg font-black text-gray-800 pl-1">${currentView === 'yufuin' ? '由布院 美食精選' : '博多 / 天神 美食精選'}</h2>
+                        </div>
+                        ${cards}
+                    </div>
+                `;
+
+            } else if (currentView === 'tips') {
+                main.innerHTML = `
+                    <div class="p-5 animate-slideIn">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-lg font-black text-gray-800 pl-1">點餐翻譯溝通卡</h2>
+                        </div>
+                        
+                        <div class="space-y-5">
+                            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-red-50 relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-16 h-16 bg-red-50 rounded-bl-full flex items-center justify-center pt-2 pl-2">
+                                    <span class="text-xl">🥩</span>
+                                </div>
+                                <p class="text-[10px] font-black text-red-600 bg-red-100 px-3 py-1 rounded-full inline-block mb-4">不吃牛出示此畫面</p>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <p class="text-gray-400 text-xs font-medium mb-1.5 flex items-center gap-1"><i data-lucide="help-circle" class="w-3 h-3"></i> 詢問餐點成分</p>
+                                        <div class="bg-gray-50 p-4 rounded-2xl mb-1.5 text-[17px] font-bold border-l-4 border-red-500 text-gray-800 leading-snug">
+                                            「これには牛肉（ぎゅうにく）が入っていますか？」
+                                        </div>
+                                        <p class="text-gray-500 text-[13px] font-bold">請問這道菜裡面有包含牛肉嗎？</p>
+                                    </div>
+                                    <div class="w-full h-px bg-gray-100"></div>
+                                    <div>
+                                        <p class="text-gray-400 text-xs font-medium mb-1.5 flex items-center gap-1"><i data-lucide="thumbs-up" class="w-3 h-3"></i> 請店員推薦</p>
+                                        <div class="bg-gray-50 p-4 rounded-2xl mb-1.5 text-[17px] font-bold border-l-4 border-red-500 text-gray-800 leading-snug">
+                                            「牛肉が食べられません。豚肉か魚の料理はありますか？」
+                                        </div>
+                                        <p class="text-gray-500 text-[13px] font-bold">我不吃牛肉。請問有豬肉或魚類的料理嗎？</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-orange-50 relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-16 h-16 bg-orange-50 rounded-bl-full flex items-center justify-center pt-2 pl-2">
+                                    <span class="text-xl">🍗</span>
+                                </div>
+                                <p class="text-[10px] font-black text-orange-600 bg-orange-100 px-3 py-1 rounded-full inline-block mb-4">不吃雞出示此畫面</p>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <p class="text-gray-400 text-xs font-medium mb-1.5 flex items-center gap-1"><i data-lucide="help-circle" class="w-3 h-3"></i> 詢問餐點成分</p>
+                                        <div class="bg-gray-50 p-4 rounded-2xl mb-1.5 text-[17px] font-bold border-l-4 border-orange-500 text-gray-800 leading-snug">
+                                            「これには鶏肉（とりにく）が入っていますか？」
+                                        </div>
+                                        <p class="text-gray-500 text-[13px] font-bold">請問這道菜裡面有包含雞肉嗎？</p>
+                                    </div>
+                                    <div class="w-full h-px bg-gray-100"></div>
+                                    <div>
+                                        <p class="text-gray-400 text-xs font-medium mb-1.5 flex items-center gap-1"><i data-lucide="thumbs-up" class="w-3 h-3"></i> 請店員推薦</p>
+                                        <div class="bg-gray-50 p-4 rounded-2xl mb-1.5 text-[17px] font-bold border-l-4 border-orange-500 text-gray-800 leading-snug">
+                                            「鶏肉が食べられません。牛肉か豚肉、魚の料理はありますか？」
+                                        </div>
+                                        <p class="text-gray-500 text-[13px] font-bold">我不吃雞肉。請問有牛肉、豬肉或魚類的料理嗎？</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // 重新渲染圖示
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+            updateNav();
+        }
+
+        function updateNav() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const view = item.getAttribute('data-view');
+                if (view === currentView) {
+                    item.classList.add('text-orange-600');
+                    item.classList.remove('text-gray-300');
+                    
+                    const icon = item.querySelector('i') || item.querySelector('svg');
+                    if (icon) icon.classList.add('scale-110');
+                } else {
+                    item.classList.remove('text-orange-600');
+                    item.classList.add('text-gray-300');
+                    
+                    const icon = item.querySelector('i') || item.querySelector('svg');
+                    if (icon) icon.classList.remove('scale-110');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(render, 100);
+        });
+    </script>
+</body>
+</html>
