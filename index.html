@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>福岡・由布院 5天4夜隨身指南</title>
     <!-- 使用 Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -31,7 +31,7 @@
 </head>
 <body class="bg-gray-100 text-gray-900 font-sans selection:bg-orange-100">
 
-    <div id="app" class="max-w-md mx-auto bg-gray-50 min-h-screen shadow-2xl relative pb-20">
+    <div id="app" class="max-w-md mx-auto bg-gray-50 min-h-screen shadow-2xl relative pb-[calc(5rem+env(safe-area-inset-bottom))]">
         
         <!-- 主標題 (永遠固定不隱藏) -->
         <header id="main-header" class="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100/50 p-4 flex justify-between items-center">
@@ -49,8 +49,8 @@
         <!-- 主內容區 -->
         <main id="main-content" class="min-h-[calc(100vh-140px)]"></main>
 
-        <!-- 導覽列 (改為 5 個按鈕) -->
-        <nav id="bottom-nav" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md p-2 bg-white/95 backdrop-blur-lg border-t border-gray-100 flex justify-around shadow-[0_-5px_20px_rgba(0,0,0,0.05)] z-50 pb-safe">
+        <!-- 導覽列 (完美貼合 iPhone 底部防白邊) -->
+        <nav id="bottom-nav" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] bg-white/95 backdrop-blur-lg border-t border-gray-100 flex justify-around shadow-[0_-5px_20px_rgba(0,0,0,0.05)] z-50">
             <button onclick="switchView('itinerary')" data-view="itinerary" class="nav-item no-select flex flex-col items-center flex-1 py-1 transition-colors text-gray-300">
                 <i data-lucide="calendar-days" class="w-5 h-5"></i><span class="text-[10px] mt-1 font-bold">行程</span>
             </button>
@@ -388,9 +388,14 @@
                                 </div>
                             </div>
                             
-                            <a href="${res.map}" target="_blank" class="flex items-center justify-center w-full bg-gray-900 text-white py-4 rounded-2xl font-black hover:bg-black active:scale-[0.98] transition-all shadow-lg text-sm">
-                                <i data-lucide="navigation" class="mr-2 w-4 h-4"></i> 查看 Google 地圖導航
-                            </a>
+                            <div class="flex gap-3">
+                                <a href="${res.map.replace('dir/?api=1&destination=', 'search/?api=1&query=')}" target="_blank" class="flex items-center justify-center flex-1 bg-gray-900 text-white py-3.5 rounded-2xl font-black hover:bg-black active:scale-[0.98] transition-all shadow-md text-sm no-select">
+                                    <i data-lucide="map" class="mr-1.5 w-4 h-4"></i> Google導覽
+                                </a>
+                                <a href="${res.map}" target="_blank" class="flex items-center justify-center flex-1 bg-emerald-500 text-white py-3.5 rounded-2xl font-black hover:bg-emerald-600 active:scale-[0.98] transition-all shadow-md text-sm no-select">
+                                    <i data-lucide="navigation" class="mr-1.5 w-4 h-4"></i> 導航
+                                </a>
+                            </div>
                         </div>
                     </div>
                 `}).join('');
