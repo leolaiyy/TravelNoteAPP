@@ -78,49 +78,49 @@
         // 完整 5 天行程資料
         const itineraryData = [
             { day: 'Day 1', date: '第一天', title: '抵達福岡・海鮮市場・福岡塔', items: [
-                { time: '10:55', type: 'transport', task: '抵達福岡機場', loc: '福岡機場國際線', note: '辦理入境與提領行李' },
-                { time: '12:30', type: 'dining', task: '午餐：柳橋連合市場', loc: '中央區春吉', note: '推薦「柳橋食堂」海鮮丼，市場內可買炸魚板、明太子 (無牛雞問題)' },
-                { time: '14:30', type: 'accommodation', task: '飯店 Check-in 入住', loc: 'Hotel Forza 博多駅筑紫口', note: '距離博多車站極近，交通便利且具質感的舒適商務旅館。' },
-                { time: '16:00', type: 'attraction', task: '福岡塔觀景', loc: '早良區百道浜', note: '登上塔頂觀海景與夕陽' },
-                { time: '18:30', type: 'dining', task: '晚餐：海風土爐端燒', loc: 'Forza 飯店步行3分鐘', noBeef: '550円生魚片箱、烤大蝦', noChicken: '生魚片箱、稻草燒和牛' }
+                { time: '10:55', type: 'transport', task: '抵達福岡機場', loc: '福岡機場國際線', map: '福岡機場國際線', note: '辦理入境與提領行李' },
+                { time: '12:30', type: 'dining', task: '午餐：柳橋連合市場', loc: '中央區春吉', map: '柳橋連合市場', note: '推薦「柳橋食堂」海鮮丼，市場內可買炸魚板、明太子 (無牛雞問題)' },
+                { time: '14:30', type: 'accommodation', task: '飯店 Check-in 入住', loc: 'Hotel Forza 博多駅筑紫口', map: 'Hotel Forza 博多駅筑紫口', note: '距離博多車站極近，交通便利且具質感的舒適商務旅館。' },
+                { time: '16:00', type: 'attraction', task: '福岡塔觀景', loc: '早良區百道浜', map: '福岡塔', note: '登上塔頂觀海景與夕陽' },
+                { time: '18:30', type: 'dining', task: '晚餐：海風土爐端燒', loc: 'Forza 飯店步行3分鐘', map: '藁焼き炉端 海風土', noBeef: '550円生魚片箱、烤大蝦', noChicken: '生魚片箱、稻草燒和牛' }
             ]},
             { day: 'Day 2', date: '第二天', title: '太宰府・柳川遊船・大名居酒屋', items: [
-                { time: '09:30', type: 'transport', task: '飯店出發', loc: 'Hotel Forza', note: '請準時於大廳集合，車程約50分鐘' },
-                { time: '10:30', type: 'attraction', task: '太宰府天滿宮', loc: '太宰府市', note: '參拜學問之神；欣賞隈研吾設計星巴克；必吃名物梅枝餅' },
-                { time: '13:00', type: 'dining', task: '午餐：本吉屋 蒸籠鰻魚飯', loc: '柳川市', note: '柳川名物必吃，建議早到避排隊 (鰻魚為主，無牛雞問題)' },
-                { time: '14:30', type: 'attraction', task: '柳川遊船體驗', loc: '柳川遊船碼頭', note: '約60分鐘；船夫唱歌，欣賞垂柳水鄉' },
+                { time: '09:30', type: 'transport', task: '飯店出發', loc: 'Hotel Forza', map: 'Hotel Forza 博多駅筑紫口', note: '請準時於大廳集合，車程約50分鐘' },
+                { time: '10:30', type: 'attraction', task: '太宰府天滿宮', loc: '太宰府市', map: '太宰府天滿宮', note: '參拜學問之神；欣賞隈研吾設計星巴克；必吃名物梅枝餅' },
+                { time: '13:00', type: 'dining', task: '午餐：本吉屋 蒸籠鰻魚飯', loc: '柳川市', map: '元祖本吉屋', note: '柳川名物必吃，建議早到避排隊 (鰻魚為主，無牛雞問題)' },
+                { time: '14:30', type: 'attraction', task: '柳川遊船體驗', loc: '柳川遊船碼頭', map: '柳川遊船', note: '約60分鐘；船夫唱歌，欣賞垂柳水鄉' },
                 { time: '17:00', type: 'transport', task: '返回福岡市區', note: '車程約1小時' },
-                { time: '18:30', type: 'dining', task: '晚餐：生蠔居酒屋', loc: '大名區 (地鐵15分鐘)', note: '店名: #カキもビールも生がスキ', noBeef: '生蠔痛風鍋、海鮮土鍋飯', noChicken: '生蠔痛風鍋、海鮮土鍋飯' }
+                { time: '18:30', type: 'dining', task: '晚餐：生蠔居酒屋', loc: '大名區 (地鐵15分鐘)', map: '#カキもビールも生がスキ。天神大名店', note: '店名: #カキもビールも生がスキ', noBeef: '生蠔痛風鍋、海鮮土鍋飯', noChicken: '生蠔痛風鍋、海鮮土鍋飯' }
             ]},
             { day: 'Day 3', date: '第三天', title: '高達立像・糸島海岸・野菜卷', items: [
-                { time: '09:30', type: 'transport', task: '飯店出發', loc: 'Hotel Forza', note: '車程約15分鐘' },
-                { time: '10:00', type: 'attraction', task: '實物大高達立像', loc: 'LaLaport 福岡', note: '24.8米 RX-93ffv高達，定時燈光演出，免費觀賞拍照' },
-                { time: '10:30', type: 'attraction', task: '三井 LaLaport 購物', loc: '博多區那珂', note: '九州最大商場：ZARA、UNIQLO、GU、VS PARK體感遊樂' },
-                { time: '12:00', type: 'dining', task: '午餐：LaLaport美食區', loc: '美食樓層', note: '拉麵、迴轉壽司、漢堡排等多間餐廳，各人可自選' },
+                { time: '09:30', type: 'transport', task: '飯店出發', loc: 'Hotel Forza', map: 'Hotel Forza 博多駅筑紫口', note: '車程約15分鐘' },
+                { time: '10:00', type: 'attraction', task: '實物大高達立像', loc: 'LaLaport 福岡', map: 'LaLaport 福岡 實物大高達', note: '24.8米 RX-93ffv高達，定時燈光演出，免費觀賞拍照' },
+                { time: '10:30', type: 'attraction', task: '三井 LaLaport 購物', loc: '博多區那珂', map: 'LaLaport 福岡', note: '九州最大商場：ZARA、UNIQLO、GU、VS PARK體感遊樂' },
+                { time: '12:00', type: 'dining', task: '午餐：LaLaport美食區', loc: '美食樓層', map: 'LaLaport 福岡', note: '拉麵、迴轉壽司、漢堡排等多間餐廳，各人可自選' },
                 { time: '13:30', type: 'transport', task: '前往糸島', note: '車程約45分鐘' },
-                { time: '14:15', type: 'attraction', task: '櫻井二見浦夫婦岩', loc: '糸島市', note: '海中白色鳥居，絕美打卡點' },
-                { time: '15:30', type: 'attraction', task: '海岸散步 / 下午茶', loc: 'Palm Beach 一帶', note: '海邊網紅咖啡店，悠閒拍照' },
+                { time: '14:15', type: 'attraction', task: '櫻井二見浦夫婦岩', loc: '糸島市', map: '櫻井二見浦夫婦岩', note: '海中白色鳥居，絕美打卡點' },
+                { time: '15:30', type: 'attraction', task: '海岸散步 / 下午茶', loc: 'Palm Beach 一帶', map: 'Palm Beach 糸島', note: '海邊網紅咖啡店，悠閒拍照' },
                 { time: '17:00', type: 'transport', task: '返回福岡市區', note: '車程約40分鐘' },
-                { time: '17:30', type: 'other', task: '自由活動', loc: '博多運河城 / 天神', note: '補買手信、藥妝' },
-                { time: '19:00', type: 'dining', task: '晚餐：鳴門 野菜卷串', loc: '天神 / 大名區', noBeef: '豬五花蔬菜卷、烤豬肉', noChicken: '豬五花蔬菜卷、和牛串' }
+                { time: '17:30', type: 'other', task: '自由活動', loc: '博多運河城 / 天神', map: '博多運河城', note: '補買手信、藥妝' },
+                { time: '19:00', type: 'dining', task: '晚餐：鳴門 野菜卷串', loc: '天神 / 大名區', map: '博多やさい巻串屋 鳴門 本店', noBeef: '豬五花蔬菜卷、烤豬肉', noChicken: '豬五花蔬菜卷、和牛串' }
             ]},
             { day: 'Day 4', date: '第四天', title: '南蔵院大佛・纜車・由布院溫泉', items: [
-                { time: '09:00', type: 'transport', task: '退房出發', loc: 'Hotel Forza', note: '⚠️ 今天行程豐富，請務必準時出發' },
-                { time: '09:40', type: 'attraction', task: '南藏院 (臥佛)', loc: '篠栗町', note: '世界最大青銅臥佛；環境清幽壯觀' },
+                { time: '09:00', type: 'transport', task: '退房出發', loc: 'Hotel Forza', map: 'Hotel Forza 博多駅筑紫口', note: '⚠️ 今天行程豐富，請務必準時出發' },
+                { time: '09:40', type: 'attraction', task: '南藏院 (臥佛)', loc: '篠栗町', map: '南藏院', note: '世界最大青銅臥佛；環境清幽壯觀' },
                 { time: '11:00', type: 'transport', task: '前往英彦山', note: '車程約1小時' },
-                { time: '12:00', type: 'dining', task: '午餐：英彦山周邊', loc: '英彦山參道入口', note: '山區定食多為烏龍麵、蕎麥，簡單吃 (晚上吃旅館大餐)' },
-                { time: '13:30', type: 'attraction', task: '英彦山神宮 & 纜車', loc: 'Slope Car', note: '單軌纜車上升至奉幣殿；不用爬樓梯，適合長輩' },
+                { time: '12:00', type: 'dining', task: '午餐：英彦山周邊', loc: '英彦山參道入口', map: '英彦山神宮 銅の鳥居', note: '山區定食多為烏龍麵、蕎麥，簡單吃 (晚上吃旅館大餐)' },
+                { time: '13:30', type: 'attraction', task: '英彦山神宮 & 纜車', loc: 'Slope Car', map: '英彦山スロープカー', note: '單軌纜車上升至奉幣殿；不用爬樓梯，適合長輩' },
                 { time: '15:00', type: 'transport', task: '前往由布院', note: '車程約 1.5 小時' },
-                { time: '16:30', type: 'attraction', task: '金鱗湖散步', loc: '由布院', note: '傍晚散步拍照；湖面倒映由布岳' },
-                { time: '17:30', type: 'accommodation', task: '入住 花由 溫泉旅館', loc: 'ゆふいん花由', note: '坐擁由布岳絕景的高級溫泉旅館，可盡情享受舒適的私人露天風呂。' },
-                { time: '19:00', type: 'dining', task: '晚餐：大分和牛懷石', loc: '花由餐廳', warning: true, note: '此餐不可更改菜式 (包含過敏、忌口、不吃生魚等)，入住前及當日均無法變更。包含阿蘇熔岩石板燒黑毛和牛。' },
+                { time: '16:30', type: 'attraction', task: '金鱗湖散步', loc: '由布院', map: '金鱗湖', note: '傍晚散步拍照；湖面倒映由布岳' },
+                { time: '17:30', type: 'accommodation', task: '入住 花由 溫泉旅館', loc: 'ゆふいん花由', map: 'ゆふいん花由', note: '坐擁由布岳絕景的高級溫泉旅館，可盡情享受舒適的私人露天風呂。' },
+                { time: '19:00', type: 'dining', task: '晚餐：大分和牛懷石', loc: '花由餐廳', map: 'ゆふいん花由', warning: true, note: '此餐不可更改菜式 (包含過敏、忌口、不吃生魚等)，入住前及當日均無法變更。包含阿蘇熔岩石板燒黑毛和牛。' },
                 { time: '20:30', type: 'other', task: '溫泉時光', loc: '房間風呂或大浴場', note: '盡情享受私人露天風呂' }
             ]},
             { day: 'Day 5', date: '第五天', title: '晨湯・採買・返程歸國', items: [
-                { time: '07:30', type: 'dining', task: '晨湯 & 和式早餐', loc: '花由旅館內', note: '把握最後泡湯時光' },
-                { time: '09:30', type: 'transport', task: '退房出發前往機場', loc: '由布院 → FUK', note: '需到店付沐浴稅<br>高速車程約2小時' },
-                { time: '11:30', type: 'other', task: '福岡機場最後採買', loc: '福岡機場國際線', note: '博多通饅頭、明太子仙貝、ROYCE朱古力等' },
-                { time: '14:00', type: 'transport', task: '搭機離開', loc: '福岡機場 (FUK)', note: '旅途愉快，滿載而歸！' }
+                { time: '07:30', type: 'dining', task: '晨湯 & 和式早餐', loc: '花由旅館內', map: 'ゆふいん花由', note: '把握最後泡湯時光' },
+                { time: '09:30', type: 'transport', task: '退房出發前往機場', loc: '由布院 → FUK', map: '福岡機場', note: '需到店付沐浴稅<br>高速車程約2小時' },
+                { time: '11:30', type: 'other', task: '福岡機場最後採買', loc: '福岡機場國際線', map: '福岡機場國際線', note: '博多通饅頭、明太子仙貝、ROYCE朱古力等' },
+                { time: '14:00', type: 'transport', task: '搭機離開', loc: '福岡機場 (FUK)', map: '福岡機場', note: '旅途愉快，滿載而歸！' }
             ]}
         ];
 
@@ -228,7 +228,22 @@
                                 <!-- 右側內容 -->
                                 <div class="pb-5 w-full pt-1">
                                     <div class="font-bold text-gray-800 text-[15px] leading-snug">${item.task}</div>
-                                    ${item.loc ? `<div class="text-[12px] text-gray-400 flex items-center gap-1 mt-1 font-bold"><i data-lucide="map-pin" class="w-3 h-3"></i><span>${item.loc}</span></div>` : ''}
+                                    ${item.loc ? `
+                                        <div class="mt-1.5 mb-0.5">
+                                            ${item.map ? `
+                                                <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.map)}" target="_blank" class="inline-flex items-center gap-1.5 text-[12px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 active:bg-blue-200 active:scale-95 px-2.5 py-1 rounded-lg transition-all shadow-sm no-select">
+                                                    <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+                                                    <span>${item.loc}</span>
+                                                    <i data-lucide="external-link" class="w-3 h-3 opacity-60"></i>
+                                                </a>
+                                            ` : `
+                                                <div class="flex items-center gap-1 text-[12px] text-gray-400 font-bold">
+                                                    <i data-lucide="map-pin" class="w-3 h-3"></i>
+                                                    <span>${item.loc}</span>
+                                                </div>
+                                            `}
+                                        </div>
+                                    ` : ''}
                                     
                                     <!-- 紅色警示提醒 (花由晚餐專用) -->
                                     ${item.warning ? `
