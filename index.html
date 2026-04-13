@@ -32,13 +32,19 @@
 <body class="bg-gray-100 text-gray-900 font-sans selection:bg-orange-100">
 
     <div id="app" class="max-w-md mx-auto bg-gray-50 min-h-screen shadow-2xl relative pb-20">
-        <!-- 頁首 -->
-        <header class="bg-white/95 backdrop-blur-sm border-b sticky top-0 z-40 p-4 flex justify-between items-center shadow-sm">
+        
+        <!-- 主標題 (永遠固定不隱藏) -->
+        <header id="main-header" class="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100/50 p-4 flex justify-between items-center">
             <div>
                 <div class="font-black text-xl tracking-tighter text-gray-800">福岡・由布院 <span class="text-orange-600">隨身本</span></div>
                 <div class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">5天4夜 暢遊九州</div>
             </div>
         </header>
+        
+        <!-- 子導航列 (Day 1 - Day 5) (隨滾動隱藏) -->
+        <div id="sub-header-wrapper" class="sticky top-[74px] z-40 transition-transform duration-300 ease-in-out w-full bg-white/95 backdrop-blur-md shadow-sm">
+            <div id="sub-header-container"></div>
+        </div>
 
         <!-- 主內容區 -->
         <main id="main-content" class="min-h-[calc(100vh-140px)]"></main>
@@ -65,6 +71,7 @@
 
     <script>
         let currentView = 'itinerary';
+        const viewOrder = ['itinerary', 'lunch', 'hakata', 'yufuin', 'tips'];
 
         // 分類配色與圖示設定
         const typeConfig = {
@@ -149,23 +156,23 @@
         };
 
         const restaurantData = [
-            // 福岡 行程晚餐 (依 Day1, Day2, Day3 順序排列)
-            { id: 'kaifudo', name: '藁焼き炉端 海風土', area: '博多站 (筑紫口)', type: '海鮮居酒屋', dist: '步行 3 分', role: 'dinner', noBeef: '550円生魚片玉手箱、炭火燒鳥', noChicken: '550円生魚片玉手箱、稻草燒和牛', map: 'https://www.google.com/maps/search/?api=1&query=藁焼き炉端+海風土', desc: '博多人氣極高的海鮮店，招牌「550円生魚片盒」性價比無敵。' },
-            { id: 'oyster', name: '#カキもビールも生がスキ', area: '天神 / 大名', type: '生蠔居酒屋', dist: '地鐵 15 分', role: 'dinner', noBeef: '生蠔痛風鍋、海鮮土鍋飯', noChicken: '生蠔痛風鍋、海鮮土鍋飯', map: 'https://www.google.com/maps/search/?api=1&query=%23カキもビールも生がスキ。天神大名店', desc: '大名人氣店，生蠔鮮甜肥美，土鍋飯是必點的結尾美食。' },
-            { id: 'naruto', name: '野菜巻き串 鳴門', area: '中洲 / 祇園', type: '野菜卷串燒', dist: '地鐵 10 分', role: 'dinner', noBeef: '各式豬肉野菜卷、雞肉串燒', noChicken: '各式豬肉野菜卷、和牛串燒', map: 'https://www.google.com/maps/search/?api=1&query=博多やさい巻串屋+鳴門+本店', desc: '福岡特色！用薄切豬肉捲入新鮮蔬菜，清爽且充滿層次感。' },
+            // 福岡 行程晚餐
+            { id: 'kaifudo', name: '藁焼き炉端 海風土', area: '博多站 (筑紫口)', type: '海鮮居酒屋', dist: '步行 3 分', role: 'dinner', noBeef: '550円生魚片玉手箱、炭火燒鳥', noChicken: '550円生魚片玉手箱、稻草燒和牛', map: 'https://www.google.com/maps/dir/?api=1&destination=藁焼き炉端+海風土', desc: '博多人氣極高的海鮮店，招牌「550円生魚片盒」性價比無敵。' },
+            { id: 'oyster', name: '#カキもビールも生がスキ', area: '天神 / 大名', type: '生蠔居酒屋', dist: '地鐵 15 分', role: 'dinner', noBeef: '生蠔痛風鍋、海鮮土鍋飯', noChicken: '生蠔痛風鍋、海鮮土鍋飯', map: 'https://www.google.com/maps/dir/?api=1&destination=%23カキもビールも生がスキ。天神大名店', desc: '大名人氣店，生蠔鮮甜肥美，土鍋飯是必點的結尾美食。' },
+            { id: 'naruto', name: '野菜巻き串 鳴門', area: '中洲 / 祇園', type: '野菜卷串燒', dist: '地鐵 10 分', role: 'dinner', noBeef: '各式豬肉野菜卷、雞肉串燒', noChicken: '各式豬肉野菜卷、和牛串燒', map: 'https://www.google.com/maps/dir/?api=1&destination=博多やさい巻串屋+鳴門+本店', desc: '福岡特色！用薄切豬肉捲入新鮮蔬菜，清爽且充滿層次感。' },
             
             // 福岡 備用推薦
-            { id: 'hyobando', name: '博多 椒房庵', area: '博多站 (9F)', type: '明太子料理', dist: '步行 4 分', role: 'backup', noBeef: '羽釜炊鯛魚茶泡飯、明太子雞翅', noChicken: '羽釜炊鯛魚茶泡飯、黑毛和牛飯', map: 'https://www.google.com/maps/search/?api=1&query=博多+椒房庵', desc: '位於博多City 9樓。提供一人一箱的精緻定食，環境優雅安靜。' },
-            { id: 'kurokatsutei', name: '黑かつ亭', area: '博多站 (9F)', type: '炸黑豬排', dist: '步行 5 分', role: 'backup', noBeef: '所有豬排定食 (純豬肉)', noChicken: '所有豬排定食 (不含雞肉)', map: 'https://www.google.com/maps/search/?api=1&query=黑かつ亭+JR博多シティ店', desc: '黑豬肉專門店，對於不吃牛/雞的人來說是最安全美味的選擇。' },
-            { id: 'shinshin', name: '博多らーめん ShinShin', area: '天神 (本店)', type: '豚骨拉麵', dist: '地鐵 10 分', role: 'backup', noBeef: '招牌豚骨拉麵、一口餃子 (純豬肉)', noChicken: '招牌豚骨拉麵、炒飯', map: 'https://www.google.com/maps/search/?api=1&query=博多らーめん+ShinShin+天神本店', desc: '福岡超人氣排隊拉麵店，湯頭濃郁但清爽不膩口，深受在地人與明星喜愛。' },
-            { id: 'daichi', name: '大地のうどん', area: '博多站 (地下街)', type: '天婦羅烏龍麵', dist: '步行 2 分', role: 'backup', noBeef: '巨大牛蒡天婦羅烏龍麵、肉片(豬)烏龍麵', noChicken: '巨大牛蒡天婦羅烏龍麵、海鮮天婦羅', map: 'https://www.google.com/maps/search/?api=1&query=大地のうどん+博多駅ちかてん', desc: '以誇張的「巨大牛蒡天婦羅」聞名，麵條晶瑩剔透且Q彈有嚼勁，平價又美味。' },
+            { id: 'hyobando', name: '博多 椒房庵', area: '博多站 (9F)', type: '明太子料理', dist: '步行 4 分', role: 'backup', noBeef: '羽釜炊鯛魚茶泡飯、明太子雞翅', noChicken: '羽釜炊鯛魚茶泡飯、黑毛和牛飯', map: 'https://www.google.com/maps/dir/?api=1&destination=博多+椒房庵', desc: '位於博多City 9樓。提供一人一箱的精緻定食，環境優雅安靜。' },
+            { id: 'kurokatsutei', name: '黑かつ亭', area: '博多站 (9F)', type: '炸黑豬排', dist: '步行 5 分', role: 'backup', noBeef: '所有豬排定食 (純豬肉)', noChicken: '所有豬排定食 (不含雞肉)', map: 'https://www.google.com/maps/dir/?api=1&destination=黑かつ亭+JR博多シティ店', desc: '黑豬肉專門店，對於不吃牛/雞的人來說是最安全美味的選擇。' },
+            { id: 'shinshin', name: '博多らーめん ShinShin', area: '天神 (本店)', type: '豚骨拉麵', dist: '地鐵 10 分', role: 'backup', noBeef: '招牌豚骨拉麵、一口餃子 (純豬肉)', noChicken: '招牌豚骨拉麵、炒飯', map: 'https://www.google.com/maps/dir/?api=1&destination=博多らーめん+ShinShin+天神本店', desc: '福岡超人氣排隊拉麵店，湯頭濃郁但清爽不膩口，深受在地人與明星喜愛。' },
+            { id: 'daichi', name: '大地のうどん', area: '博多站 (地下街)', type: '天婦羅烏龍麵', dist: '步行 2 分', role: 'backup', noBeef: '巨大牛蒡天婦羅烏龍麵、肉片(豬)烏龍麵', noChicken: '巨大牛蒡天婦羅烏龍麵、海鮮天婦羅', map: 'https://www.google.com/maps/dir/?api=1&destination=大地のうどん+博多駅ちかてん', desc: '以誇張的「巨大牛蒡天婦羅」聞名，麵條晶瑩剔透且Q彈有嚼勁，平價又美味。' },
             
             // 由布院 (含晚餐與備用)
-            { id: 'hanayoshi', name: '花由餐廳 (大分和牛懷石)', area: '由布院 (旅館內)', type: '懷石料理', dist: '住宿享用', role: 'dinner', noBeef: '享用套餐內的海鮮與配菜 (和牛請親友代勞)', noChicken: '正常享用 (以和牛海鮮為主)', map: 'https://www.google.com/maps/search/?api=1&query=ゆふいん花由', desc: '⚠️ 此餐不可更改菜式 (包含過敏、忌口、不吃生魚等)，入住前及當日均無法變更。包含阿蘇熔岩石板燒黑毛和牛。' },
-            { id: 'shin', name: '由布まぶし 心', area: '由布院站前', type: '釜飯三吃', dist: '由布院步行 10 分', role: 'backup', noBeef: '鰻魚釜飯 (推薦)、地雞釜飯', noChicken: '鰻魚釜飯、豐後牛釜飯', map: 'https://www.google.com/maps/search/?api=1&query=由布まぶし+心+駅前支店', desc: '由布院排隊名店，一鍋三吃（原味、拌佐料、茶泡飯）。' },
-            { id: 'izumi', name: '古式手打ちそば 泉', area: '由布院 (金鱗湖旁)', type: '手打蕎麥麵', dist: '由布院步行 20 分', role: 'backup', noBeef: '天婦羅蕎麥麵、豆腐料理', noChicken: '天婦羅蕎麥麵、豆腐料理', map: 'https://www.google.com/maps/search/?api=1&query=古式手打ちそば+泉+金鱗湖', desc: '位於金鱗湖畔，可以一邊欣賞美景一邊品嚐道地的手打麵。' },
-            { id: 'kunugi', name: '櫟の丘 (Kunugi no Oka)', area: '由布院 (郊區山丘)', type: '柴燒披薩', dist: '車程 5 分', role: 'backup', noBeef: '瑪格麗特披薩、海鮮義大利麵', noChicken: '培根蘑菇披薩、海鮮義大利麵', map: 'https://www.google.com/maps/search/?api=1&query=櫟の丘+由布院', desc: '坐擁由布院絕佳風景的景觀餐廳，招牌是正宗的柴燒石窯披薩與手工義大利麵。' },
-            { id: 'laruche', name: 'Café La Ruche', area: '由布院 (金鱗湖畔)', type: '湖畔咖啡輕食', dist: '由布院步行 20 分', role: 'backup', noBeef: '明太子奶油義大利麵、可頌三明治', noChicken: '明太子奶油義大利麵、沙拉拼盤', map: 'https://www.google.com/maps/search/?api=1&query=Cafe+La+Ruche+由布院', desc: '位於金鱗湖畔的絕美咖啡館。可以一邊喝咖啡、吃輕食，一邊欣賞夢幻的湖景。' }
+            { id: 'hanayoshi', name: '花由餐廳 (大分和牛懷石)', area: '由布院 (旅館內)', type: '懷石料理', dist: '住宿享用', role: 'dinner', noBeef: '享用套餐內的海鮮與配菜 (和牛請親友代勞)', noChicken: '正常享用 (以和牛海鮮為主)', map: 'https://www.google.com/maps/dir/?api=1&destination=ゆふいん花由', desc: '⚠️ 此餐不可更改菜式 (包含過敏、忌口、不吃生魚等)，入住前及當日均無法變更。包含阿蘇熔岩石板燒黑毛和牛。' },
+            { id: 'shin', name: '由布まぶし 心', area: '由布院站前', type: '釜飯三吃', dist: '由布院步行 10 分', role: 'backup', noBeef: '鰻魚釜飯 (推薦)、地雞釜飯', noChicken: '鰻魚釜飯、豐後牛釜飯', map: 'https://www.google.com/maps/dir/?api=1&destination=由布まぶし+心+駅前支店', desc: '由布院排隊名店，一鍋三吃（原味、拌佐料、茶泡飯）。' },
+            { id: 'izumi', name: '古式手打ちそば 泉', area: '由布院 (金鱗湖旁)', type: '手打蕎麥麵', dist: '由布院步行 20 分', role: 'backup', noBeef: '天婦羅蕎麥麵、豆腐料理', noChicken: '天婦羅蕎麥麵、豆腐料理', map: 'https://www.google.com/maps/dir/?api=1&destination=古式手打ちそば+泉+金鱗湖', desc: '位於金鱗湖畔，可以一邊欣賞美景一邊品嚐道地的手打麵。' },
+            { id: 'kunugi', name: '櫟の丘 (Kunugi no Oka)', area: '由布院 (郊區山丘)', type: '柴燒披薩', dist: '車程 5 分', role: 'backup', noBeef: '瑪格麗特披薩、海鮮義大利麵', noChicken: '培根蘑菇披薩、海鮮義大利麵', map: 'https://www.google.com/maps/dir/?api=1&destination=櫟の丘+由布院', desc: '坐擁由布院絕佳風景的景觀餐廳，招牌是正宗的柴燒石窯披薩與手工義大利麵。' },
+            { id: 'laruche', name: 'Café La Ruche', area: '由布院 (金鱗湖畔)', type: '湖畔咖啡輕食', dist: '由布院步行 20 分', role: 'backup', noBeef: '明太子奶油義大利麵、可頌三明治', noChicken: '明太子奶油義大利麵、沙拉拼盤', map: 'https://www.google.com/maps/dir/?api=1&destination=Cafe+La+Ruche+由布院', desc: '位於金鱗湖畔的絕美咖啡館。可以一邊喝咖啡、吃輕食，一邊欣賞夢幻的湖景。' }
         ];
 
         function switchView(view) {
@@ -176,22 +183,21 @@
 
         function render() {
             const main = document.getElementById('main-content');
+            const subHeader = document.getElementById('sub-header-container');
             
             if (currentView === 'itinerary') {
-                let html = '';
-                
-                // 即時切換天數的吸頂導航列
-                html += `<div class="sticky top-[60px] z-30 bg-white/95 backdrop-blur-md py-2.5 border-b border-gray-100 shadow-sm flex gap-2 px-4 overflow-x-auto hide-scrollbar whitespace-nowrap">`;
+                // 行程表專屬：Day 1-5 導航掛載到 Header
+                let subHtml = `<div class="py-2 border-b border-gray-100 flex gap-2 px-4 overflow-x-auto hide-scrollbar whitespace-nowrap">`;
                 itineraryData.forEach((day, idx) => {
-                    html += `<button onclick="document.getElementById('day-${idx}').scrollIntoView({behavior: 'smooth'})" class="px-3.5 py-1.5 bg-gray-100 border border-gray-200 rounded-full text-xs font-black text-gray-600 shadow-sm active:scale-95 transition-all focus:bg-gray-800 focus:text-white focus:border-gray-800 no-select">${day.day}</button>`;
+                    subHtml += `<button onclick="document.getElementById('day-${idx}').scrollIntoView({behavior: 'smooth'})" class="px-3.5 py-1.5 bg-gray-100/80 border border-gray-200/80 rounded-full text-xs font-black text-gray-600 shadow-sm active:scale-95 transition-all focus:bg-gray-800 focus:text-white focus:border-gray-800 no-select">${day.day}</button>`;
                 });
-                html += `</div>`;
+                subHtml += `</div>`;
+                subHeader.innerHTML = subHtml;
 
-                html += '<div class="p-4 space-y-6 animate-fadeIn">';
+                let html = '<div class="p-4 space-y-6 animate-fadeIn">';
 
                 // 產生每日行程
                 itineraryData.forEach((day, idx) => {
-                    // 加入 id 與 scroll-mt-safe 確保點擊跳轉時位置精準
                     html += `
                     <div id="day-${idx}" class="bg-white rounded-[1.5rem] shadow-sm border border-gray-100 overflow-hidden scroll-mt-safe">
                         <div class="bg-gray-800 text-white p-4 relative overflow-hidden">
@@ -217,7 +223,7 @@
                                     <span class="text-[13px] font-black text-gray-800 tracking-tighter">${item.time}</span>
                                 </div>
                                 
-                                <!-- 中間時間軸與圖示 (視覺化配色) -->
+                                <!-- 中間時間軸與圖示 -->
                                 <div class="flex flex-col items-center">
                                     <div class="w-7 h-7 rounded-full border-[1.5px] flex items-center justify-center shrink-0 shadow-sm z-10 ${style.color}">
                                         <i data-lucide="${style.icon}" class="w-3.5 h-3.5"></i>
@@ -231,10 +237,9 @@
                                     ${item.loc ? `
                                         <div class="mt-1.5 mb-0.5">
                                             ${item.map ? `
-                                                <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.map)}" target="_blank" class="inline-flex items-center gap-1.5 text-[12px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 active:bg-blue-200 active:scale-95 px-2.5 py-1 rounded-lg transition-all shadow-sm no-select">
-                                                    <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
-                                                    <span>${item.loc}</span>
-                                                    <i data-lucide="external-link" class="w-3 h-3 opacity-60"></i>
+                                                <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(item.map)}" target="_blank" class="inline-flex items-center gap-1.5 text-[12px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 active:bg-blue-200 active:scale-95 px-2.5 py-1 rounded-lg transition-all shadow-sm no-select">
+                                                    <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
+                                                    <span>導航至 ${item.loc}</span>
                                                 </a>
                                             ` : `
                                                 <div class="flex items-center gap-1 text-[12px] text-gray-400 font-bold">
@@ -245,7 +250,6 @@
                                         </div>
                                     ` : ''}
                                     
-                                    <!-- 紅色警示提醒 (花由晚餐專用) -->
                                     ${item.warning ? `
                                         <div class="mt-2 bg-red-50 border border-red-200 text-red-800 p-3 rounded-xl text-[12px] font-bold leading-relaxed shadow-sm">
                                             <div class="flex items-center gap-1.5 mb-1.5 text-red-600 text-[13px] font-black">
@@ -257,7 +261,6 @@
                                         <div class="text-[12px] text-gray-500 bg-gray-50 px-3 py-2 rounded-xl leading-relaxed mt-2 font-medium">${item.note}</div>
                                     ` : ''}
 
-                                    <!-- 飲食建議分離卡片 -->
                                     ${(item.noBeef || item.noChicken) ? `
                                         <div class="mt-2.5 space-y-1.5">
                                             ${item.noBeef ? `
@@ -284,6 +287,7 @@
                 main.innerHTML = html;
 
             } else if (currentView === 'lunch') {
+                subHeader.innerHTML = ''; // 清空子導航
                 let html = `
                     <div class="p-4 animate-slideIn pb-8">
                         <div class="flex items-center justify-between mb-4">
@@ -335,10 +339,10 @@
                 main.innerHTML = html;
 
             } else if (currentView === 'hakata' || currentView === 'yufuin') {
+                subHeader.innerHTML = ''; // 清空子導航
                 const data = restaurantData
                     .filter(d => currentView === 'yufuin' ? d.area.includes('由布院') : !d.area.includes('由布院'))
                     .sort((a, b) => {
-                        // 確保晚餐類別置頂，且同類別維持原本陣列設定的順序
                         if (a.role === 'dinner' && b.role !== 'dinner') return -1;
                         if (a.role !== 'dinner' && b.role === 'dinner') return 1;
                         return 0;
@@ -382,7 +386,7 @@
                             </div>
                             
                             <a href="${res.map}" target="_blank" class="flex items-center justify-center w-full bg-gray-900 text-white py-4 rounded-2xl font-black hover:bg-black active:scale-[0.98] transition-all shadow-lg text-sm">
-                                <i data-lucide="map" class="mr-2 w-4 h-4"></i> 查看 Google 地圖導覽
+                                <i data-lucide="navigation" class="mr-2 w-4 h-4"></i> 查看 Google 地圖導航
                             </a>
                         </div>
                     </div>
@@ -398,6 +402,7 @@
                 `;
 
             } else if (currentView === 'tips') {
+                subHeader.innerHTML = ''; // 清空子導航
                 main.innerHTML = `
                     <div class="p-5 animate-slideIn">
                         <div class="flex items-center justify-between mb-6">
@@ -472,21 +477,99 @@
                 if (view === currentView) {
                     item.classList.add('text-orange-600');
                     item.classList.remove('text-gray-300');
-                    
                     const icon = item.querySelector('i') || item.querySelector('svg');
                     if (icon) icon.classList.add('scale-110');
                 } else {
                     item.classList.remove('text-orange-600');
                     item.classList.add('text-gray-300');
-                    
                     const icon = item.querySelector('i') || item.querySelector('svg');
                     if (icon) icon.classList.remove('scale-110');
                 }
             });
         }
 
+        // ==========================================
+        // 互動優化邏輯 (向下隱藏選單 & 左右滑動切換)
+        // ==========================================
+        
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(render, 100);
+
+            const header = document.getElementById('main-header');
+            const subHeaderWrapper = document.getElementById('sub-header-wrapper');
+            
+            // 動態設定子選單的 top 位置，確保完美銜接在主標題下方
+            const updateStickyTop = () => {
+                if (header && subHeaderWrapper) {
+                    subHeaderWrapper.style.top = `${header.offsetHeight}px`;
+                }
+            };
+            // 初始化與視窗縮放時更新
+            updateStickyTop();
+            window.addEventListener('resize', updateStickyTop);
+
+            // 1. 向下捲動時自動隱藏子選單 (保留主標題)
+            let lastScrollTop = 0;
+            window.addEventListener('scroll', () => {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                // 增加一個緩衝高度 (80px)，避免在頁面最上方就頻繁觸發
+                if (scrollTop > 80) {
+                    if (scrollTop > lastScrollTop) {
+                        // 向下捲動 -> 隱藏子選單
+                        subHeaderWrapper.classList.add('-translate-y-full');
+                    } else {
+                        // 向上捲動 -> 顯示子選單
+                        subHeaderWrapper.classList.remove('-translate-y-full');
+                    }
+                } else {
+                    // 回到最頂部時強迫顯示
+                    subHeaderWrapper.classList.remove('-translate-y-full');
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, { passive: true });
+
+            // 2. 加入左右滑動 (Swipe) 切換分頁手勢
+            let touchstartX = 0;
+            let touchstartY = 0;
+            let swipeTarget = null;
+
+            document.addEventListener('touchstart', e => {
+                touchstartX = e.changedTouches[0].screenX;
+                touchstartY = e.changedTouches[0].screenY;
+                swipeTarget = e.target; // 紀錄一開始點擊的元素
+            }, { passive: true });
+
+            document.addEventListener('touchend', e => {
+                // 如果使用者的滑動起始點，是位於原本就可以「左右捲動」的容器內（例如 Day 1-5 導航列）
+                // 則終止畫面切換手勢，防止誤觸干擾。
+                if (swipeTarget && swipeTarget.closest('.overflow-x-auto')) {
+                    return; 
+                }
+
+                const touchendX = e.changedTouches[0].screenX;
+                const touchendY = e.changedTouches[0].screenY;
+                const xDiff = touchstartX - touchendX;
+                const yDiff = touchstartY - touchendY;
+
+                // 判斷是否為「水平滑動」：X軸位移大於Y軸，且超過一定距離(60px)
+                if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 60) {
+                    const currentIndex = viewOrder.indexOf(currentView);
+                    
+                    if (xDiff > 0) {
+                        // 手指向左滑 (Swipe Left) -> 切換到下一頁
+                        if (currentIndex < viewOrder.length - 1) {
+                            switchView(viewOrder[currentIndex + 1]);
+                        }
+                    } else {
+                        // 手指向右滑 (Swipe Right) -> 切換到上一頁
+                        if (currentIndex > 0) {
+                            switchView(viewOrder[currentIndex - 1]);
+                        }
+                    }
+                }
+            }, { passive: true });
+
         });
     </script>
 </body>
