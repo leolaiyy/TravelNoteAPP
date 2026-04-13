@@ -529,14 +529,16 @@
                 lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
             }, { passive: true });
 
-            // 2. 加入左右滑動 (Swipe) 切換分頁手勢
+            // 2. 加入左右滑動 (Swipe) 切換分頁手勢 (專業防誤觸版)
             let touchstartX = 0;
             let touchstartY = 0;
+            let touchstartTime = 0; // 紀錄滑動開始時間
             let swipeTarget = null;
 
             document.addEventListener('touchstart', e => {
                 touchstartX = e.changedTouches[0].screenX;
                 touchstartY = e.changedTouches[0].screenY;
+                touchstartTime = new Date().getTime(); // 記錄觸碰瞬間
                 swipeTarget = e.target; // 紀錄一開始點擊的元素
             }, { passive: true });
 
@@ -549,20 +551,28 @@
 
                 const touchendX = e.changedTouches[0].screenX;
                 const touchendY = e.changedTouches[0].screenY;
+                const touchendTime = new Date().getTime(); // 記錄手指離開瞬間
+
                 const xDiff = touchstartX - touchendX;
                 const yDiff = touchstartY - touchendY;
+                const elapsedTime = touchendTime - touchstartTime; // 計算滑動花了多少時間
 
-                // 判斷是否為「水平滑動」：X軸位移大於Y軸，且超過一定距離(60px)
-                if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 60) {
+                // 防誤觸機制升級：加入距離、時間、與垂直偏移限制
+                const minSwipeDistance = 70; // 必須滑動超過 70px 才會觸發 (避免輕微碰觸)
+                const maxVerticalDeviation = 50; // 垂直滑動不能超過 50px (避免把上下捲動誤判為左右滑)
+                const maxSwipeTime = 400; // 必須在 0.4 秒內完成快速滑動 (排除緩慢拖曳與長按)
+
+                // 只有同時滿足「時間短」、「X軸位移夠大」、「Y軸位移極小」時，才觸發切換
+                if (elapsedTime <= maxSwipeTime && Math.abs(xDiff) >= minSwipeDistance && Math.abs(yDiff) <= maxVerticalDeviation) {
                     const currentIndex = viewOrder.indexOf(currentView);
                     
                     if (xDiff > 0) {
-                        // 手指向左滑 (Swipe Left) -> 切換到下一頁
+                        // 手指向左快速滑動 (Swipe Left) -> 切換到下一頁
                         if (currentIndex < viewOrder.length - 1) {
                             switchView(viewOrder[currentIndex + 1]);
                         }
                     } else {
-                        // 手指向右滑 (Swipe Right) -> 切換到上一頁
+                        // 手指向右快速滑動 (Swipe Right) -> 切換到上一頁
                         if (currentIndex > 0) {
                             switchView(viewOrder[currentIndex - 1]);
                         }
